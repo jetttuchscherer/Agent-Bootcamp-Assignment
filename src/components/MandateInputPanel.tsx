@@ -391,7 +391,7 @@ export const MandateInputPanel: React.FC<MandateInputPanelProps> = ({
         </div>
         <p className="leading-relaxed">
           BComm Finance · 9 yrs experience · MBA candidate (expected April 2027)
-          · CFA Level II candidate (expected May 2027)
+          · CFA Level II candidate (May 2027 exam)
         </p>
         <p className="text-[11px] text-slate-600 dark:text-slate-300">
           Excludes all accounting positions &amp; CPA-required roles

@@ -620,7 +620,7 @@ export async function buildCareerReportDocxBuffer(
   children.push(sectionHeading('07', 'Personalized, Sourced Outreach Messages'));
   children.push(
     bodyParagraph(
-      'Credentials are stated strictly as "MBA candidate (expected April 2027)" and "CFA Level II candidate (expected May 2027)" in compliance with ethical standards.'
+      'Credentials are stated strictly as "MBA candidate (expected April 2027)" and "CFA Level II candidate (May 2027 exam)" in compliance with ethical standards.'
     )
   );
   for (const draft of report.outreachMessages) {
@@ -735,7 +735,7 @@ export async function buildCareerReportDocxBuffer(
                 alignment: AlignmentType.CENTER,
                 children: [
                   new TextRun({
-                    text: 'BComm Finance · 9 Yrs Exp · MBA Candidate (Expected Apr 2027) · CFA Level II Candidate (Expected May 2027)  |  Page ',
+                    text: 'BComm Finance · 9 Yrs Exp · MBA Candidate (Expected Apr 2027) · CFA Level II Candidate (May 2027 Exam)  |  Page ',
                     size: 16,
                     color: SLATE_MUTED,
                     font: 'Calibri',

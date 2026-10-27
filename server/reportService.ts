@@ -82,7 +82,7 @@ function buildRequestCacheKey(
   const hash = crypto.createHash('sha256');
   hash.update(
     JSON.stringify({
-      policyVersion: 'v6-chain-of-command',
+      policyVersion: 'v8-big5-balanced-cfa-exam',
       reportDate,
       prompt: (reqBody.prompt || '').trim(),
       focusTracks: reqBody.focusTracks || [],
@@ -421,7 +421,7 @@ FIXED CANDIDATE PROFILE & STRICT ROLE EXCLUSIONS:
 - Education: BComm in Finance
 - Experience: 9 years progressive finance experience
 - Graduate Study: MBA candidate (expected April 2027)
-- Designation: CFA Level II candidate (expected May 2027)
+- Designation: CFA Level II candidate (May 2027 exam) — NOTE: May 2027 is the scheduled CFA Level II exam sitting date, NOT an expected graduation/charter completion date. Always state "CFA Level II candidate (May 2027 exam)" and NEVER "expected May 2027".
 - Target Total Compensation: CAD $100,000 – $200,000
 - Markets: Calgary, AB (Primary) > Saskatoon, SK (Secondary)
 - STRICT EXCLUSION (MANDATORY): Remove and exclude ALL accounting positions (Accountant, Senior Accountant, Accounting Manager, Director of Accounting, Controller, Comptroller, Bookkeeper, Auditor, Tax, Payroll) AND any roles requiring or preferring a CPA (Chartered Professional Accountant) designation from rankedJobs, adjacentRoles, topThreePriorities, compensationInsights, executiveSummary, weeklyActionPlan, and outreachMessages. The candidate is NOT qualified for accounting or CPA roles.
@@ -434,7 +434,7 @@ ${liveEvidenceText}
 INSTRUCTIONS:
 ${groundingRule}
 Return ONLY a single valid JSON object (no markdown commentary outside JSON) matching the exact schema below:
-1. "rankedJobs": Up to 10 currently ACTIVE non-accounting, non-CPA jobs in Calgary, AB (priority) and Saskatoon, SK in Corporate Banking, Corporate Finance, or M&A / Transaction Advisory originally posted between ${windowStartDate} and ${reportDate}. Exclude closed, duplicate, undated, >30-day, accounting, or CPA-required postings.
+1. "rankedJobs": Up to 10 currently ACTIVE non-accounting, non-CPA jobs in Calgary, AB (priority) and Saskatoon, SK in Corporate Banking, Corporate Finance, or M&A / Transaction Advisory originally posted between ${windowStartDate} and ${reportDate}. Explicitly include verified active Big-5 Canadian bank corporate/commercial banking, credit structuring, cash management/treasury, and investment banking postings (BMO, RBC, CIBC, Scotiabank, TD) from the SERVER-VERIFIED LIVE EVIDENCE packet alongside top regional mandates. Exclude closed, duplicate, undated, >30-day, accounting, or CPA-required postings.
 2. "adjacentRoles": 2 to 6 separated active non-accounting, non-CPA adjacent finance/commercial/credit bridge roles posted between ${windowStartDate} and ${reportDate}.
 3. Equal 33.3% scoring on every role (0–100 integers): "qualificationsFitScore", "careerGrowthScore", "totalCompScore", and "compositeScore" = (fit+growth+comp)/3.
 4. "compensationLabel" on every job and benchmark MUST be strictly "Published", "Estimate (<Exact Source Name>)", or "Unknown".
@@ -445,7 +445,7 @@ Return ONLY a single valid JSON object (no markdown commentary outside JSON) mat
    - State the chain-of-command reporting rationale explicitly in "networkingRationale". NEVER invent names, emails, or private phone numbers.
 6. "compensationInsights": Sourced non-CPA CAD base, bonus, and total comp ranges for Calgary & Saskatoon.
 7. "weeklyActionPlan": Steps summing to 5.5–9.5 total hours.
-8. "outreachMessages": 3 personalized, sourced outreach drafts addressed to real named contacts/organizations from your verified networking contacts and top ranked jobs, stating strictly "MBA candidate (expected April 2027)" and "CFA Level II candidate (expected May 2027)".
+8. "outreachMessages": 3 personalized, sourced outreach drafts addressed to real named contacts/organizations from your verified networking contacts and top ranked jobs, stating strictly "MBA candidate (expected April 2027)" and "CFA Level II candidate (May 2027 exam)".
 9. "weeklyChanges": Compare against uploaded documents if provided (${hasUploadedHistory}), otherwise set mode="baseline".
 
 REQUIRED JSON STRUCTURE:
@@ -456,7 +456,7 @@ REQUIRED JSON STRUCTURE:
     "triggered": ${deterministicEthics.triggered},
     "statusLabel": "string",
     "explanation": "string",
-    "enforcedCredentialsStatement": "MBA candidate (expected April 2027) · CFA Level II candidate (expected May 2027)"
+    "enforcedCredentialsStatement": "MBA candidate (expected April 2027) · CFA Level II candidate (May 2027 exam)"
   },
   "executiveSummary": ["paragraph 1", "paragraph 2"],
   "verificationMethodologyNote": "string",
@@ -835,14 +835,14 @@ async function executeResilientReportPipeline(
         };
       });
 
-    // Supplement with live-verified Job Bank / ESDC / Corporate records if URL pruning thinned any section
-    if (parsedReport.rankedJobs.length < 4) {
+    // Supplement with live-verified Big-5 Bank / Job Bank / Corporate records so verified bank postings are never omitted
+    if (parsedReport.rankedJobs.length < 8) {
       parsedReport.rankedJobs = [
         ...parsedReport.rankedJobs,
         ...deterministicBaseline.rankedJobs,
       ];
     }
-    if (parsedReport.adjacentRoles.length < 2) {
+    if (parsedReport.adjacentRoles.length < 4) {
       parsedReport.adjacentRoles = [
         ...parsedReport.adjacentRoles,
         ...deterministicBaseline.adjacentRoles,
@@ -895,8 +895,8 @@ async function executeResilientReportPipeline(
 
   // If auditing pruned placeholder/invalid entries below target thresholds, backfill with live-verified portal records and re-normalize
   if (
-    auditedReport.rankedJobs.length < 4 ||
-    auditedReport.adjacentRoles.length < 2 ||
+    auditedReport.rankedJobs.length < 8 ||
+    auditedReport.adjacentRoles.length < 4 ||
     auditedReport.networkingContacts.length < 8 ||
     auditedReport.outreachMessages.length < 3 ||
     auditedReport.compensationInsights.benchmarks.length < 3

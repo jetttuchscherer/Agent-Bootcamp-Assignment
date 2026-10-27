@@ -10,7 +10,7 @@ export const FIXED_CANDIDATE_PROFILE = {
   education: 'BComm in Finance',
   experience: '9 years progressive finance experience',
   mbaStatus: 'MBA candidate (expected April 2027)',
-  cfaStatus: 'CFA Level II candidate (expected May 2027)',
+  cfaStatus: 'CFA Level II candidate (May 2027 exam)',
   compensationTargetCad: 'CAD $100,000 – $200,000',
   geographicPriority: 'Calgary, AB (Primary) · Saskatoon, SK (Secondary)',
   targetTracks: [
@@ -41,7 +41,7 @@ export function detectEthicsViolationInPrompt(userPrompt: string): {
       return {
         triggered: true,
         reason:
-          'Request to misrepresent incomplete credentials or fabricate evidence was rejected. In compliance with CFA Institute Standards of Professional Conduct and report integrity rules, incomplete designations cannot be presented as completed. All sections strictly state "MBA candidate (expected April 2027)" and "CFA Level II candidate (expected May 2027)".',
+          'Request to misrepresent incomplete credentials or fabricate evidence was rejected. In compliance with CFA Institute Standards of Professional Conduct and report integrity rules, incomplete designations cannot be presented as completed. All sections strictly state "MBA candidate (expected April 2027)" and "CFA Level II candidate (May 2027 exam)".',
       };
     }
   }
@@ -81,7 +81,11 @@ function parseIsoDateDaysDiff(postedDate: string, reportDate: string): number | 
 function sanitizeCredentialClaims(text: string): string {
   if (!text) return text;
   return text
-    .replace(/\bCFA\s+[Cc]harterholder\b/g, 'CFA Level II candidate (expected May 2027)')
+    .replace(/\bCFA\s+[Cc]harterholder\b/g, 'CFA Level II candidate (May 2027 exam)')
+    .replace(
+      /\bCFA([^.\n]{0,45}?)\(\s*expected\s+May\s+2027\s*\)/gi,
+      'CFA$1(May 2027 exam)'
+    )
     .replace(/\bcompleted\s+MBA\b/gi, 'MBA candidate (expected April 2027)')
     .replace(/\bMBA\s+graduate\b/gi, 'MBA candidate (expected April 2027)');
 }
@@ -182,8 +186,17 @@ function auditOpportunitiesList(
       verificationDate: reportDate,
       directUrl: job.directUrl.trim(),
       qualificationsFitScore: fit,
+      qualificationsFitRationale: sanitizeCredentialClaims(
+        job.qualificationsFitRationale || ''
+      ),
       careerGrowthScore: growth,
+      careerGrowthRationale: sanitizeCredentialClaims(
+        job.careerGrowthRationale || ''
+      ),
       totalCompScore: comp,
+      totalCompRationale: sanitizeCredentialClaims(
+        job.totalCompRationale || ''
+      ),
       compositeScore: composite,
       compensationLabel: normalizeCompensationLabel(job.compensationLabel),
       roleSummary: sanitizeCredentialClaims(job.roleSummary || ''),
@@ -366,10 +379,13 @@ export function auditAndNormalizeReport(
       if (/\bMBA\b/.test(body) && !/MBA candidate \(expected April 2027\)/i.test(body)) {
         body = body.replace(/\bMBA\s*(?:candidate)?(?:\s*\([^)]*\))?/i, 'MBA candidate (expected April 2027)');
       }
-      if (/\bCFA\b/.test(body) && !/CFA Level II candidate/i.test(body)) {
+      if (
+        /\bCFA\b/.test(body) &&
+        !/CFA Level II candidate \(May 2027 exam\)/i.test(body)
+      ) {
         body = body.replace(
           /\bCFA(?:\s+Level\s+(?:II|2))?\s*(?:candidate)?(?:\s*\([^)]*\))?/i,
-          'CFA Level II candidate (expected May 2027)'
+          'CFA Level II candidate (May 2027 exam)'
         );
       }
       return {
@@ -391,10 +407,10 @@ export function auditAndNormalizeReport(
     explanation: ethicsTriggered
       ? deterministicEthics.reason ||
         raw.ethicsAudit?.explanation ||
-        'Requests to claim completed MBA or CFA credentials were rejected. All sections state "MBA candidate (expected April 2027)" and "CFA Level II candidate (expected May 2027)".'
-      : 'All credentials are accurately stated as BComm in Finance, MBA candidate (expected April 2027), and CFA Level II candidate (expected May 2027). Only public sources and active postings within 30 calendar days are included.',
+        'Requests to claim completed MBA or CFA credentials were rejected. All sections state "MBA candidate (expected April 2027)" and "CFA Level II candidate (May 2027 exam)".'
+      : 'All credentials are accurately stated as BComm in Finance, MBA candidate (expected April 2027), and CFA Level II candidate (May 2027 exam). Only public sources and active postings within 30 calendar days are included.',
     enforcedCredentialsStatement:
-      'BComm in Finance · 9 years experience · MBA candidate (expected April 2027) · CFA Level II candidate (expected May 2027)',
+      'BComm in Finance · 9 years experience · MBA candidate (expected April 2027) · CFA Level II candidate (May 2027 exam)',
   };
 
   // Ensure Top 3 Priorities match the top ranked jobs (or top actionable items if <3 jobs)
@@ -471,7 +487,9 @@ export function auditAndNormalizeReport(
     fileName: `Career_Opportunity_Report_${reportDate}.docx`,
     candidateProfile: {
       ...FIXED_CANDIDATE_PROFILE,
-      resumeHighlights: raw.candidateProfile?.resumeHighlights || [],
+      resumeHighlights: (raw.candidateProfile?.resumeHighlights || []).map(
+        sanitizeCredentialClaims
+      ),
     },
     ethicsAudit,
     executiveSummary: (raw.executiveSummary || []).map(sanitizeCredentialClaims),

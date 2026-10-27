@@ -221,8 +221,8 @@ export const ReportWorkspace: React.FC<ReportWorkspaceProps> = ({
               Run Baseline Weekly Report
             </button>
             <span className="text-xs text-slate-500 dark:text-slate-400">
-              Applies fixed BComm · 9 yrs · MBA (Apr 2027) · CFA L2 (May 2027)
-              profile automatically
+              Applies fixed BComm · 9 yrs · MBA (expected Apr 2027) · CFA L2
+              (May 2027 exam) profile automatically
             </span>
           </div>
         </div>
@@ -896,8 +896,8 @@ export const ReportWorkspace: React.FC<ReportWorkspaceProps> = ({
               </h2>
               <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
                 Every draft states credentials truthfully as MBA candidate
-                (expected April 2027) and CFA Level II candidate (expected May
-                2027).
+                (expected April 2027) and CFA Level II candidate (May 2027
+                exam).
               </p>
             </div>
 
