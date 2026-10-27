@@ -1,0 +1,8 @@
+{
+  "name": "Prairie Finance Career Brief",
+  "description": "Weekly evidence-based corporate banking, corporate finance, and M&A opportunity research, scoring, and Word report generator for Calgary and Saskatoon.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

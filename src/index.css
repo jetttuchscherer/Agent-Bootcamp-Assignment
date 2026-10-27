@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    color: #0f172a;
+    background-color: #f8fafc;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  html.dark {
+    color: #f1f5f9;
+    background-color: #0b1120;
+    letter-spacing: 0.006em;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes errorScreenBlink {
+  0%, 100% {
+    opacity: 0;
+  }
+  45%, 55% {
+    opacity: 1;
+  }
+}
+
+.error-blink-overlay {
+  animation: errorScreenBlink 0.56s ease-in-out 3 forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *:not(.error-blink-overlay),
+  *:not(.error-blink-overlay)::before,
+  *:not(.error-blink-overlay)::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
